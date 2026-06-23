@@ -4,3 +4,4 @@ Commit 3: 2026-06-23T15:43:48.618592 - test: add unit tests for UserDetailsImpl 
 Commit 4: 2026-06-23T17:35:00.971881 - fix: correct token expiry time validation check
 Commit 5: 2026-06-23T19:16:06.058435 - perf: configure spring boot serialization properties
 Commit 6: 2026-06-23T21:10:26.261244 - feat: implement house points ranking aggregation service
+Commit 7: 2026-06-23T23:17:27.114827 - refactor: clean up unused imports in AuthController
