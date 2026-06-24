@@ -1,0 +1,13 @@
+{
+  "name": "arviona-workspace",
+  "version": "1.0.0",
+  "description": "Enterprise multi-module structure for Arviona LMS",
+  "scripts": {
+    "client:install": "npm install --prefix client",
+    "client:dev": "npm run dev --prefix client",
+    "client:build": "npm run build --prefix client",
+    "client:lint": "npm run lint --prefix client",
+    "server:build": "mvn clean package -f server/pom.xml",
+    "server:run": "mvn spring-boot:run -f server/pom.xml"
+  }
+}

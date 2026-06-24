@@ -1,0 +1,61 @@
+# ──────────────────────────────────────────────
+# Arviona – Monorepo .gitignore
+# Spring Boot (server) + Vite/React (client)
+# ──────────────────────────────────────────────
+
+# ── macOS ──
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ── IDE / Editors ──
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+*.swp
+*.swo
+*.bak
+
+# ── Java / Maven ──
+server/target/
+server/*.class
+server/*.jar
+server/*.war
+server/.mvn/wrapper/maven-wrapper.jar
+!server/.mvn/wrapper/maven-wrapper.properties
+
+# ── Node / npm ──
+client/node_modules/
+client/dist/
+client/.vite/
+node_modules/
+dist/
+
+# ── Env & Secrets ──
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+
+# ── Logs ──
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── OS ──
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Test output ──
+server/target/surefire-reports/
+coverage/
