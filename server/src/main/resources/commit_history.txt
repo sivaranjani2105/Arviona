@@ -11,3 +11,4 @@ Commit 10: 2026-06-24T04:34:09.168543 - fix: handle null values in student knowl
 Commit 11: 2026-06-24T06:16:36.949091 - style: format code according to google java style guide
 Commit 12: 2026-06-24T07:51:38.122513 - refactor: extract dashboard service helpers for clarity
 Commit 13: 2026-06-24T10:18:54.685376 - perf: optimize database indexes on student_id and subject
+Commit 14: 2026-06-24T11:51:06.591100 - feat: add custom error handler for security exceptions
