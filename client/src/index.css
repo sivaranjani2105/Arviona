@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --bg-primary: #f4f7fe;
+  --bg-secondary: #ffffff;
+  --accent-primary: #4318FF;
+  --accent-secondary: #39B8FF;
+  --text-primary: #2B3674;
+  --text-secondary: #707EAE;
+  --text-light: #ffffff;
+  
+  --success: #05CD99;
+  --warning: #FFCE20;
+  --danger: #EE5D50;
+
+  /* Shadows */
+  --shadow-sm: 0px 4px 10px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0px 10px 20px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0px 18px 40px rgba(112, 144, 176, 0.12);
+  
+  /* Borders */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Typography Utility */
+.h1 { font-size: 32px; font-weight: 700; line-height: 1.2; }
+.h2 { font-size: 24px; font-weight: 700; line-height: 1.3; }
+.h3 { font-size: 20px; font-weight: 700; line-height: 1.4; }
+.subtitle { font-size: 16px; font-weight: 500; color: var(--text-secondary); }
+.body { font-size: 14px; font-weight: 400; line-height: 1.5; }
+.caption { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+
+/* Common Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: var(--text-light);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: #3311CC;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(67, 24, 255, 0.25);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-primary);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--accent-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(67, 24, 255, 0.05);
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid #E0E5F2;
+  background: var(--bg-secondary);
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all var(--transition-normal);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1);
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+/* Badge Styles */
+.badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-success { background: rgba(5, 205, 153, 0.1); color: var(--success); }
+.badge-warning { background: rgba(255, 206, 32, 0.1); color: #E5B800; }
+.badge-danger { background: rgba(238, 93, 80, 0.1); color: var(--danger); }
+
+
+/* Arivo Animations */
+@keyframes gradient-move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.animated-bg { background: linear-gradient(-45deg, #f3f4f6, #eef2ff, #f5f3ff, #fdf4ff); background-size: 400% 400%; animation: gradient-move 15s ease infinite; }
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px 2px rgba(80, 70, 229, 0.4); } 50% { box-shadow: 0 0 20px 6px rgba(80, 70, 229, 0.6); } }
+@keyframes gem-pulse { 0%, 100% { box-shadow: 0 0 8px 2px rgba(6, 182, 212, 0.4); } 50% { box-shadow: 0 0 16px 4px rgba(6, 182, 212, 0.6); } }
+@keyframes gem-scale { 0%, 90%, 100% { transform: scale(1); } 95% { transform: scale(1.15); } }
