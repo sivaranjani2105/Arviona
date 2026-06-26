@@ -34,3 +34,4 @@ Commit 33: 2026-06-26T01:50:38.713265 - perf: optimize student dashboard renderi
 Commit 34: 2026-06-26T04:11:16.533685 - feat: add custom theme options to student profile
 Commit 35: 2026-06-26T05:52:27.210391 - docs: clarify parent link authorization rules in DEVELOPMENT.md
 Commit 36: 2026-06-26T07:22:52.627847 - test: cover user roles authorization checks with spring security mockmvc
+Commit 37: 2026-06-26T09:51:30.670911 - fix: avoid duplicate key constraint on daily journey initializations
