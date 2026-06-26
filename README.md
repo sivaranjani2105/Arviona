@@ -23,8 +23,7 @@ Arviona is a next-generation school learning platform that replaces boring dashb
 | Layer | Technology |
 |---|---|
 | **Frontend** | React 18, Vite, Framer Motion, Recharts, Lucide Icons |
-| **Backend** | Spring Boot 3, Spring Security, JPA/Hibernate |
-| **Database** | PostgreSQL + Flyway Migrations |
+| **Backend** | Spring Boot 3, | **Database** | MySQL + Flyway Migrations |
 | **Authentication** | JWT (Bearer Token) |
 | **Styling** | Tailwind CSS (via Vite) + custom CSS |
 
@@ -35,7 +34,7 @@ Arviona is a next-generation school learning platform that replaces boring dashb
 ### Prerequisites
 - Java 17+
 - Node.js 18+
-- PostgreSQL 14+
+- MySQL 8.0+
 - Maven 3.8+
 
 ### 1. Clone the repository
@@ -45,11 +44,11 @@ cd arviona
 ```
 
 ### 2. Configure the database
-Create a PostgreSQL database and update `server/src/main/resources/application.properties`:
+Create a MySQL database and update `server/src/main/resources/application.properties`:
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/arviona
-spring.datasource.username=YOUR_USER
-spring.datasource.password=YOUR_PASSWORD
+spring.datasource.url=jdbc:mysql://localhost:3306/arviona?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=
 ```
 
 ### 3. Run the backend
@@ -130,6 +129,7 @@ arviona/
 │       └── resources/
 │           ├── db/migration/       # Flyway SQL migrations
 │           └── application.properties
+│   └── dist/                       # Production frontend build assets compiled by Vite
 └── client/                         # React frontend
     └── src/
         ├── pages/
@@ -154,6 +154,10 @@ arviona/
 | V2 | Gamification engine (XP, badges, houses, pets, quests, knowledge map) |
 | V3 | Enterprise loops (store items, inventory, daily journeys, events, quest chains) |
 | V4 | Principal role and demo account seed |
+| V5 | Boss Battle system database schemas |
+| V6 | School gamification default XP configuration parameters |
+| V7 | Files, store items, and notifications schema alterations |
+| V8 | Weekly reports and student activity engagement logs |
 
 ---
 
