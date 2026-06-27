@@ -7,5 +7,6 @@ import java.util.List;
 
 @Repository
 public interface BossBattleRepository extends JpaRepository<BossBattle, String> {
-    List<BossBattle> findAllByClassEntityIdAndDeletedFalse(String classId);
+    List<BossBattle> findAllByActiveTrueAndDeletedFalse();
+    List<BossBattle> findAllByClassIdAndDeletedFalse(String classId);
 }

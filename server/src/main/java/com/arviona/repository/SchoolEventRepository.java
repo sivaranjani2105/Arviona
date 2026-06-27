@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface SchoolEventRepository extends JpaRepository<SchoolEvent, String> {
     List<SchoolEvent> findAllByActiveTrueAndDeletedFalse();
+    List<SchoolEvent> findAllByDeletedFalse();
 }

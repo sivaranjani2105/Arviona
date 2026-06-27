@@ -10,43 +10,56 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"classEntity"})
-@ToString(exclude = {"classEntity"})
 public class BossBattle {
+
     @Id
     private String id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", nullable = false)
-    private ClassEntity classEntity;
 
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(name = "time_limit_seconds")
-    private int timeLimitSeconds = 1800;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @Column(name = "reward_xp")
-    private int rewardXp = 300;
+    @Column(nullable = false, length = 100)
+    private String subject;
 
     @Column(length = 50)
     private String difficulty = "MEDIUM";
 
-    @Column(name = "questions_pool_json", columnDefinition = "TEXT")
-    private String questionsPoolJson;
+    @Column(name = "time_limit_mins")
+    private int timeLimitMins = 30;
+
+    @Column(name = "total_questions")
+    private int totalQuestions = 10;
+
+    @Column(name = "xp_reward")
+    private int xpReward = 300;
+
+    @Column(name = "coins_reward")
+    private int coinsReward = 100;
+
+    @Column(name = "class_id")
+    private String classId;
+
+    @Column(name = "created_by_teacher")
+    private String createdByTeacher;
+
+    @Column(name = "is_active")
+    private boolean active = true;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean deleted = false;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "created_by", length = 50)
-    private String createdBy;
-
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;
+    @Column(name = "created_by", length = 100)
+    private String createdBy;
 
-    @Column(name = "is_deleted", nullable = false)
-    private boolean deleted = false;
+    @Column(name = "updated_by", length = 100)
+    private String updatedBy;
 }

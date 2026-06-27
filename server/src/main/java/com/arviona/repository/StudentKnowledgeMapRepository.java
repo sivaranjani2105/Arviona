@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface StudentKnowledgeMapRepository extends JpaRepository<StudentKnowledgeMap, String> {
     List<StudentKnowledgeMap> findAllByStudentIdAndDeletedFalse(String studentId);
-    Optional<StudentKnowledgeMap> findByStudentIdAndSubjectAndTopicAndSubtopicAndDeletedFalse(String studentId, String subject, String topic, String subtopic);
+    Optional<StudentKnowledgeMap> findByStudentIdAndSubjectAndDeletedFalse(String studentId, String subject);
+    Optional<StudentKnowledgeMap> findByStudentIdAndSubjectAndTopicAndSubtopicAndDeletedFalse(
+            String studentId, String subject, String topic, String subtopic);
 }

@@ -62,12 +62,15 @@ public class TeacherCopilotController {
         String battleId = UUID.randomUUID().toString();
         BossBattle battle = BossBattle.builder()
                 .id(battleId)
-                .classEntity(classEntity)
+                .classId(classId)
                 .title("Boss Battle: " + title)
-                .timeLimitSeconds(1200)
-                .rewardXp(300)
+                .subject("General")
+                .timeLimitMins(20)
+                .xpReward(300)
+                .coinsReward(100)
+                .totalQuestions(10)
                 .difficulty("HARD")
-                .questionsPoolJson("{\"questions\":[{\"id\":\"q1\",\"text\":\"Solve derivative of f(x) derived from chapter text\"},{\"id\":\"q2\",\"text\":\"Calculate theoretical efficiency\"}]}")
+                .active(true)
                 .createdBy("teacher-copilot")
                 .build();
         bossBattleRepository.save(battle);
