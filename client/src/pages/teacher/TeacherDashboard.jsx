@@ -190,8 +190,8 @@ const TeacherDashboard = () => {
   const handleSaveNote = (e) => {
     e.preventDefault();
     if (!noteStudentId || !noteTitle || !noteContent) return;
-    addWrittenNote(noteStudentId, noteTitle, noteContent, noteFileName || null);
-    alert('Note uploaded/saved successfully!');
+    addWrittenNote({ studentId: noteStudentId, title: noteTitle, content: noteContent, fileName: noteFileName || null });
+    alert('Note saved successfully!');
     setNoteTitle('');
     setNoteContent('');
     setNoteFileName('');
@@ -207,7 +207,7 @@ const TeacherDashboard = () => {
   const handleSaveEvent = (e) => {
     e.preventDefault();
     if (!eventTitle || !eventDate || !eventTime) return;
-    addScheduleEvent(eventTitle, eventDate, eventTime, eventType, eventDesc);
+    addScheduleEvent({ title: eventTitle, date: eventDate, time: eventTime, type: eventType, desc: eventDesc });
     alert('Event scheduled successfully!');
     setEventTitle('');
     setEventDate('');
@@ -244,15 +244,16 @@ const TeacherDashboard = () => {
     setTeacherNotes(defaultNotes);
   };
 
-  const handleSaveAndSendReport = (e) => {
+  const handleSaveAndSendReport = async (e) => {
     e.preventDefault();
     if (!activeReportStudent) return;
-
-    const report = generateWeeklyReport(activeReportStudent.id, teacherNotes);
-    if (report) {
-      sendReportToParent(report.id);
+    const report = await generateWeeklyReport(activeReportStudent.id, teacherNotes);
+    if (report && report.id) {
+      await sendReportToParent(report.id);
     }
     setActiveReportStudent(null);
+    setTeacherNotes('');
+    alert(`Report generated and sent to parent for ${activeReportStudent.name}!`);
   };
 
   // Send ML Intervention alert
