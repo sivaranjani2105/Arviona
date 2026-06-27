@@ -194,10 +194,44 @@ public class GamificationController {
         response.put("mission3Completed", journey.isMission3Completed());
         response.put("dailyBonusClaimed", journey.isDailyBonusClaimed());
 
-        // Predefined mission texts for daily loops
-        response.put("mission1Text", "Solve 5 calculus derivatives practice questions");
-        response.put("mission2Text", "Complete a 3-minute AI Study Companion fraction challenge");
-        response.put("mission3Text", "Purchase and equip a cosmetic skin/theme from the Store");
+        // Dynamic, personalized daily missions based on Student's Knowledge Map state
+        List<StudentKnowledgeMap> kms = knowledgeMapRepository.findAllByStudentIdAndDeletedFalse(studentId);
+        
+        String weakTopic = "Calculus";
+        String weakSubject = "Mathematics";
+        boolean hasWeak = false;
+
+        // Try to find a Critical or Weak topic first
+        Optional<StudentKnowledgeMap> weakKmo = kms.stream()
+                .filter(k -> "Critical".equalsIgnoreCase(k.getStatus()) || "Weak".equalsIgnoreCase(k.getStatus()))
+                .findFirst();
+
+        if (weakKmo.isPresent()) {
+            weakTopic = weakKmo.get().getTopic();
+            weakSubject = weakKmo.get().getSubject();
+            hasWeak = true;
+        } else {
+            // Fall back to any topic currently marked as Learning
+            Optional<StudentKnowledgeMap> learningKmo = kms.stream()
+                    .filter(k -> "Learning".equalsIgnoreCase(k.getStatus()))
+                    .findFirst();
+            if (learningKmo.isPresent()) {
+                weakTopic = learningKmo.get().getTopic();
+                weakSubject = learningKmo.get().getSubject();
+                hasWeak = true;
+            }
+        }
+
+        if (hasWeak) {
+            response.put("mission1Text", "Solve 5 practice questions targeting: " + weakTopic + " (" + weakSubject + ")");
+            response.put("mission2Text", "Complete a 3-minute Arivo companion session reviewing: " + weakTopic);
+            response.put("mission3Text", "Complete any active homework quest or review " + weakSubject + " course modules");
+        } else {
+            // Default missions if student has perfect knowledge map or empty
+            response.put("mission1Text", "Solve 5 calculus derivatives practice questions");
+            response.put("mission2Text", "Complete a 3-minute AI Study Companion fraction challenge");
+            response.put("mission3Text", "Purchase and equip a cosmetic skin/theme from the Store");
+        }
 
         return ResponseEntity.ok(response);
     }

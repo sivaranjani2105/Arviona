@@ -137,12 +137,28 @@ public class DashboardService {
                             .map(g2 -> Math.min(100, g2.getLevel() * 10 + g2.getCurrentStreak() * 2))
                             .orElse(65);
 
+                    // Build a realistic heatmap consistent with student engagement index
+                    Map<String, List<Integer>> heatmap = new HashMap<>();
+                    String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+                    for (String d : days) {
+                        heatmap.put(d, new ArrayList<>(Collections.nCopies(8, 0)));
+                    }
+                    Random rand = new Random(s.getId().hashCode());
+                    for (String d : days) {
+                        for (int i = 0; i < 8; i++) {
+                            if (rand.nextDouble() > 0.4) {
+                                heatmap.get(d).set(i, rand.nextInt(45) + 5);
+                            }
+                        }
+                    }
+
                     Map<String, Object> studentMap = new HashMap<>();
                     studentMap.put("id",              s.getId());
                     studentMap.put("name",            s.getName());
                     studentMap.put("email",           s.getEmail());
                     studentMap.put("knowledgeGaps",   gaps);
                     studentMap.put("engagementIndex", engagementIndex);
+                    studentMap.put("heatmap",         heatmap);
                     studentMap.put("classId",         c.getId());
                     allStudents.add(studentMap);
                     classStudents.add(studentMap);

@@ -56,6 +56,7 @@ export const DataProvider = ({ children }) => {
           name:    profile.name  || user.name,
           email:   profile.email || user.email,
           xp: 0, streak: 0, grade: 'A', subject: 'Physics',
+          studyPlan: studyPlan.tasks,
         }]);
         const rawAssignments = data.assignments || [];
         setAssignments(rawAssignments.map(a => ({
@@ -131,6 +132,7 @@ export const DataProvider = ({ children }) => {
           const data = dashRes.value;
           if (data.children && data.children.length > 0) {
             const firstChild = data.children[0];
+            firstChild.studyPlan = studyPlan.tasks;
             setStudents([firstChild]);
             const childDetails = firstChild.details || {};
             setAssignments((childDetails.assignments || []).map(a => ({
