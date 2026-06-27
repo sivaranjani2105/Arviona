@@ -1056,7 +1056,7 @@ const StudentDashboard = () => {
     );
   };
 
-  const unreadNotifCount = notifications.filter(n => n.recipient === 'student' && !n.read).length;
+  const unreadNotifCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="min-h-screen flex bg-background relative overflow-x-hidden font-sans">
@@ -1517,16 +1517,17 @@ const StudentDashboard = () => {
                     <span className="text-xs text-primary font-semibold">{unreadNotifCount} New</span>
                   </div>
                   <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto">
-                    {notifications.filter(n => n.recipient === 'student').length > 0 ? (
-                      notifications.filter(n => n.recipient === 'student').map((notif) => (
+                    {notifications.length > 0 ? (
+                      notifications.map((notif) => (
                         <div key={notif.id} className="p-3.5 hover:bg-slate-50/50 transition-colors flex gap-2.5">
                           <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
                             notif.type === 'success' ? 'bg-emerald-500' :
                             notif.type === 'warning' ? 'bg-amber-500' : 'bg-blue-500'
                           }`}></span>
                           <div>
-                            <p className="text-xs text-slate-700 leading-snug">{notif.text}</p>
-                            <span className="text-[10px] text-slate-400 block mt-1">{notif.time}</span>
+                            <p className="text-xs font-bold text-slate-800">{notif.title || "Notification"}</p>
+                            <p className="text-xs text-slate-600 leading-snug mt-0.5">{notif.message}</p>
+                            <span className="text-[10px] text-slate-400 block mt-1">Just now</span>
                           </div>
                         </div>
                       ))
