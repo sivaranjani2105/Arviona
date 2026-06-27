@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Users, BookOpen, FileText, BarChart2, User, 
   LogOut, Search, Bell, Plus, CheckCircle2, X, Edit, Trash2, 
   Send, AlertTriangle, ChevronRight, Sparkles, MessageSquare, ClipboardList,
-  ArrowLeft, Calendar, Download, Clock
+  ArrowLeft, Calendar, Download, Clock, Sword, Target, Zap
 } from 'lucide-react';
 
 const TeacherDashboard = () => {
@@ -98,7 +98,16 @@ const TeacherDashboard = () => {
   const [eventType, setEventType] = useState('Live Class');
   const [eventDesc, setEventDesc] = useState('');
 
-  // Module Form handlers
+  // ── Boss Battle Creator State ────────────────────────────────────────────
+  const [bbTitle, setBbTitle] = useState('');
+  const [bbSubject, setBbSubject] = useState('Mathematics');
+  const [bbDifficulty, setBbDifficulty] = useState('MEDIUM');
+  const [bbTimeLimit, setBbTimeLimit] = useState(30);
+  const [bbQuestions, setBbQuestions] = useState(5);
+  const [bbXpReward, setBbXpReward] = useState(300);
+  const [bbCreated, setBbCreated] = useState([]);
+  const [bbSubmitting, setBbSubmitting] = useState(false);
+
   const handleOpenCreateModule = () => {
     setModuleFormTitle('');
     setModuleFormTopics('');
@@ -1074,6 +1083,169 @@ const TeacherDashboard = () => {
       );
     }
 
+    if (activeTab === 'bossbattle') {
+      const subjectOptions = ['Mathematics','Physics','Chemistry','Biology','English','History','Geography','Computer Science'];
+      const difficultyMeta = {
+        EASY:      { color: 'text-emerald-600 bg-emerald-50  border-emerald-200', xp: 150,  label: 'Easy',      emoji: '🟢' },
+        MEDIUM:    { color: 'text-amber-600  bg-amber-50   border-amber-200',   xp: 300,  label: 'Medium',    emoji: '🟡' },
+        HARD:      { color: 'text-rose-600   bg-rose-50    border-rose-200',    xp: 500,  label: 'Hard',      emoji: '🔴' },
+        LEGENDARY: { color: 'text-purple-600 bg-purple-50  border-purple-200',  xp: 1000, label: 'Legendary', emoji: '👑' },
+      };
+
+      const handleCreateBossBattle = async (e) => {
+        e.preventDefault();
+        if (!bbTitle.trim()) return;
+        setBbSubmitting(true);
+        try {
+          const { api } = await import('../../services/api');
+          const data = await api.post('/boss-battles', {
+            title: bbTitle, subject: bbSubject, difficulty: bbDifficulty,
+            timeLimitMins: Number(bbTimeLimit), totalQuestions: Number(bbQuestions),
+            xpReward: Number(bbXpReward), coinsReward: Math.round(Number(bbXpReward) / 3),
+          });
+          setBbCreated(prev => [{ id: data.id || Date.now(), title: bbTitle, subject: bbSubject, difficulty: bbDifficulty, xpReward: bbXpReward, timeLimitMins: bbTimeLimit, totalQuestions: bbQuestions, createdAt: new Date().toLocaleDateString() }, ...prev]);
+          setBbTitle('');
+        } catch {
+          setBbCreated(prev => [{ id: Date.now(), title: bbTitle, subject: bbSubject, difficulty: bbDifficulty, xpReward: bbXpReward, timeLimitMins: bbTimeLimit, totalQuestions: bbQuestions, createdAt: new Date().toLocaleDateString() }, ...prev]);
+          setBbTitle('');
+        } finally {
+          setBbSubmitting(false);
+        }
+      };
+
+      return (
+        <div className="space-y-6">
+          {/* Header card */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-rose-500 via-orange-500 to-amber-500 rounded-3xl p-6 text-white shadow-xl">
+            <div className="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full" />
+            <div className="absolute -right-4 -bottom-8 w-24 h-24 bg-white/10 rounded-full" />
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-white/20 rounded-xl p-2"><Sword size={22} /></div>
+                <h2 className="font-poppins font-bold text-xl">Boss Battle Creator</h2>
+              </div>
+              <p className="text-white/80 text-sm max-w-md">Design epic challenge exams for your students. Each Boss Battle is a timed, high-stakes quiz that awards XP, coins, and accelerates pet evolution.</p>
+              <div className="flex gap-4 mt-4">
+                {[['🏟️',`${bbCreated.length} Created`],['⚡','XP on Win'],['🕐','Time Limited']].map(([icon,label]) => (
+                  <div key={label} className="bg-white/15 rounded-xl px-3 py-1.5 text-xs font-semibold">{icon} {label}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Create Form */}
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
+              <h3 className="font-poppins font-bold text-slate-800 text-base mb-5 flex items-center gap-2"><Plus size={18} className="text-rose-500" /> New Boss Battle</h3>
+              <form onSubmit={handleCreateBossBattle} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1.5">Battle Title *</label>
+                  <input value={bbTitle} onChange={e => setBbTitle(e.target.value)} placeholder="e.g. Calculus Showdown" required
+                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 bg-slate-50" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1.5">Subject</label>
+                    <select value={bbSubject} onChange={e => setBbSubject(e.target.value)}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                      {subjectOptions.map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1.5">Difficulty</label>
+                    <select value={bbDifficulty} onChange={e => setBbDifficulty(e.target.value)}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                      {Object.entries(difficultyMeta).map(([k,v]) => <option key={k} value={k}>{v.emoji} {v.label}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1.5">⏱️ Time Limit (mins)</label>
+                    <input type="number" min={5} max={120} value={bbTimeLimit} onChange={e => setBbTimeLimit(e.target.value)}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-400" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1.5">❓ Questions</label>
+                    <input type="number" min={3} max={30} value={bbQuestions} onChange={e => setBbQuestions(e.target.value)}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-400" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1.5">⚡ XP Reward</label>
+                    <input type="number" min={50} max={2000} step={50} value={bbXpReward} onChange={e => setBbXpReward(e.target.value)}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-400" />
+                  </div>
+                </div>
+                {/* Preview card */}
+                <div className={`border rounded-2xl p-4 ${difficultyMeta[bbDifficulty].color}`}>
+                  <p className="text-xs font-bold mb-1">Preview</p>
+                  <p className="font-poppins font-bold text-base">{bbTitle || 'Battle Title...'}</p>
+                  <div className="flex gap-3 mt-2 text-xs font-semibold">
+                    <span>📚 {bbSubject}</span>
+                    <span>⏱ {bbTimeLimit} min</span>
+                    <span>❓ {bbQuestions} Qs</span>
+                    <span>⚡ {bbXpReward} XP</span>
+                  </div>
+                </div>
+                <button type="submit" disabled={bbSubmitting}
+                  className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 disabled:opacity-60 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-lg shadow-rose-200 flex items-center justify-center gap-2">
+                  {bbSubmitting ? '⚔️ Creating...' : <><Sword size={16} /> Create Boss Battle</>}
+                </button>
+              </form>
+            </div>
+
+            {/* Created battles list */}
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
+              <h3 className="font-poppins font-bold text-slate-800 text-base mb-5 flex items-center gap-2"><Target size={18} className="text-orange-500" /> Your Boss Battles</h3>
+              {bbCreated.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <div className="text-5xl mb-3">⚔️</div>
+                  <p className="font-semibold text-slate-500 text-sm">No battles created yet</p>
+                  <p className="text-xs text-slate-400 mt-1">Create your first Boss Battle to challenge your students!</p>
+                </div>
+              ) : (
+                <div className="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+                  {bbCreated.map(battle => (
+                    <div key={battle.id} className="border border-slate-100 rounded-2xl p-4 hover:border-rose-200 hover:bg-rose-50/30 transition-all">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <p className="font-poppins font-bold text-slate-800 text-sm">{battle.title}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{battle.subject} · Created {battle.createdAt}</p>
+                        </div>
+                        <span className={`text-xs font-bold px-2 py-1 rounded-lg border ${difficultyMeta[battle.difficulty]?.color}`}>
+                          {difficultyMeta[battle.difficulty]?.emoji} {difficultyMeta[battle.difficulty]?.label}
+                        </span>
+                      </div>
+                      <div className="flex gap-3 mt-3">
+                        {[['⏱',`${battle.timeLimitMins}m`],['❓',`${battle.totalQuestions} Qs`],['⚡',`${battle.xpReward} XP`]].map(([icon,val]) => (
+                          <span key={val} className="text-xs bg-slate-100 text-slate-600 font-semibold rounded-lg px-2 py-1">{icon} {val}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Tips */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-5">
+            <h4 className="font-poppins font-bold text-amber-800 text-sm mb-3 flex items-center gap-2"><Zap size={16} /> Boss Battle Tips</h4>
+            <div className="grid sm:grid-cols-3 gap-3 text-xs text-amber-700">
+              {[['🏆 Use LEGENDARY','For end-of-term exams. Rewards up to 1000 XP and triggers pet evolution.'],
+                ['⚡ Schedule with Events','Link Boss Battles to Calendar events so students get notified.'],
+                ['🧠 Mix Difficulties','Start with EASY warmups, escalate to HARD to build confidence progressively.']].map(([t,d]) => (
+                <div key={t} className="bg-white/70 rounded-2xl p-3">
+                  <p className="font-bold mb-1">{t}</p>
+                  <p>{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (activeTab === 'assignments') {
       return (
         <div className="space-y-6">
@@ -1500,15 +1672,16 @@ const TeacherDashboard = () => {
           <nav className="space-y-2 flex-1">
             {/* Standard side navigation items */}
             {[
-              { id: 'dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
-              { id: 'classes', icon: <BookOpen size={20} />, label: 'Course Modules' },
-              { id: 'gaps', icon: <AlertTriangle size={20} />, label: 'Learning Gaps' },
-              { id: 'notes', icon: <FileText size={20} />, label: 'Written Notes' },
-              { id: 'schedule', icon: <Calendar size={20} />, label: 'Class Schedule' },
-              { id: 'monitor', icon: <Clock size={20} />, label: 'Study-Time Monitor' },
-              { id: 'assignments', icon: <FileText size={20} />, label: 'Assignments' },
-              { id: 'students', icon: <Users size={20} />, label: 'Students' },
-              { id: 'reports', icon: <ClipboardList size={20} />, label: 'Weekly Parent Reports' }
+              { id: 'dashboard',   icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+              { id: 'classes',     icon: <BookOpen size={20} />,       label: 'Course Modules' },
+              { id: 'gaps',        icon: <AlertTriangle size={20} />,  label: 'Learning Gaps' },
+              { id: 'bossbattle',  icon: <Sword size={20} />,          label: 'Boss Battles' },
+              { id: 'notes',       icon: <FileText size={20} />,       label: 'Written Notes' },
+              { id: 'schedule',    icon: <Calendar size={20} />,       label: 'Class Schedule' },
+              { id: 'monitor',     icon: <Clock size={20} />,          label: 'Study-Time Monitor' },
+              { id: 'assignments', icon: <FileText size={20} />,       label: 'Assignments' },
+              { id: 'students',    icon: <Users size={20} />,          label: 'Students' },
+              { id: 'reports',     icon: <ClipboardList size={20} />,  label: 'Weekly Parent Reports' }
             ].map((item) => (
               <button 
                 key={item.id} 
@@ -1573,13 +1746,14 @@ const TeacherDashboard = () => {
           <div>
             <h1 className="text-3xl font-poppins font-bold text-slate-900 capitalize">
               {activeTab === 'dashboard' ? `Good morning, Dr. ${userName}!` : 
-               activeTab === 'classes' ? 'Course Modules' : 
-               activeTab === 'gaps' ? 'Learning Gaps Tracker' :
-               activeTab === 'notes' ? 'Written Notes' :
-               activeTab === 'schedule' ? 'Class Schedule' :
-               activeTab === 'monitor' ? 'Study-Time Monitor' :
+               activeTab === 'classes'     ? 'Course Modules' : 
+               activeTab === 'gaps'        ? 'Learning Gaps Tracker' :
+               activeTab === 'bossbattle'  ? '⚔️ Boss Battle Creator' :
+               activeTab === 'notes'       ? 'Written Notes' :
+               activeTab === 'schedule'    ? 'Class Schedule' :
+               activeTab === 'monitor'     ? 'Study-Time Monitor' :
                activeTab === 'assignments' ? 'Assignments' :
-               activeTab === 'students' ? 'Student Directory' :
+               activeTab === 'students'    ? 'Student Directory' :
                'Weekly Parent Reports'}
             </h1>
             <p className="text-slate-500 mt-1 text-sm">
