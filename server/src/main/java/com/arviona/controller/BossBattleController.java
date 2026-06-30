@@ -107,10 +107,10 @@ public class BossBattleController {
             int newPetXp = pet.getPetXp() + petXpGained;
             pet.setPetXp(newPetXp);
             String oldStage = pet.getEvolutionStage();
-            if (newPetXp >= 1000 && oldStage.equals("BABY"))         pet.setEvolutionStage("JUNIOR");
-            else if (newPetXp >= 3000 && oldStage.equals("JUNIOR"))  pet.setEvolutionStage("ADVANCED");
-            else if (newPetXp >= 6000 && oldStage.equals("ADVANCED")) pet.setEvolutionStage("ELITE");
-            else if (newPetXp >= 10000 && oldStage.equals("ELITE"))   pet.setEvolutionStage("LEGENDARY");
+            if (newPetXp >= 1000 && oldStage.equalsIgnoreCase("BABY"))         pet.setEvolutionStage("JUNIOR");
+            else if (newPetXp >= 3000 && oldStage.equalsIgnoreCase("JUNIOR"))  pet.setEvolutionStage("ADVANCED");
+            else if (newPetXp >= 6000 && oldStage.equalsIgnoreCase("ADVANCED")) pet.setEvolutionStage("ELITE");
+            else if (newPetXp >= 10000 && oldStage.equalsIgnoreCase("ELITE"))   pet.setEvolutionStage("LEGENDARY");
             pet.setUpdatedBy(student.getName());
             petRepository.save(pet);
             petStage = pet.getEvolutionStage();

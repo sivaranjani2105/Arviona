@@ -195,13 +195,13 @@ public class QuestController {
         
         // Handle Pet Evolution
         String originalStage = pet.getEvolutionStage();
-        if (newPetXp >= 1000 && originalStage.equals("BABY")) {
+        if (newPetXp >= 1000 && originalStage.equalsIgnoreCase("BABY")) {
             pet.setEvolutionStage("JUNIOR");
-        } else if (newPetXp >= 3000 && originalStage.equals("JUNIOR")) {
+        } else if (newPetXp >= 3000 && originalStage.equalsIgnoreCase("JUNIOR")) {
             pet.setEvolutionStage("ADVANCED");
-        } else if (newPetXp >= 6000 && originalStage.equals("ADVANCED")) {
+        } else if (newPetXp >= 6000 && originalStage.equalsIgnoreCase("ADVANCED")) {
             pet.setEvolutionStage("ELITE");
-        } else if (newPetXp >= 10000 && originalStage.equals("ELITE")) {
+        } else if (newPetXp >= 10000 && originalStage.equalsIgnoreCase("ELITE")) {
             pet.setEvolutionStage("LEGENDARY");
         }
         pet.setUpdatedBy(student.getName());
