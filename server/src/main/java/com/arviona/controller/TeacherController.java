@@ -26,6 +26,8 @@ public class TeacherController {
     @Autowired private SchoolEventRepository schoolEventRepository;
     @Autowired private ClassRepository classRepository;
     @Autowired private NotificationRepository notificationRepository;
+    @Autowired private com.arviona.service.NotificationService notificationService;
+
 
     @GetMapping("/dashboard")
     public ResponseEntity<Map<String, Object>> getDashboard(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -81,7 +83,7 @@ public class TeacherController {
                         .readStatus(false)
                         .createdBy(userDetails.getName())
                         .build();
-                notificationRepository.save(notif);
+                notificationService.saveAndSend(notif);
             });
         }
 
@@ -175,7 +177,7 @@ public class TeacherController {
                 .readStatus(false)
                 .createdBy(userDetails.getName())
                 .build();
-        notificationRepository.save(notif);
+        notificationService.saveAndSend(notif);
         return ResponseEntity.ok(Map.of("message", "Notification sent"));
     }
 }

@@ -160,6 +160,49 @@ export const DataProvider = ({ children }) => {
 
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
 
+  // Real-time WebSocket Notifications Listener
+  useEffect(() => {
+    if (!user || !user.id) return;
+
+    let socket;
+    let reconnectTimeout;
+
+    const connectWebSocket = () => {
+      const wsUrl = `ws://localhost:8080/ws/notifications?userId=${user.id}`;
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        console.log('WebSocket connected to notification service.');
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const newNotif = JSON.parse(event.data);
+          // Prepend new real-time notification to the local list
+          setNotifications((prev) => [newNotif, ...prev]);
+        } catch (e) {
+          console.error('Failed to parse WebSocket notification message:', e);
+        }
+      };
+
+      socket.onclose = () => {
+        console.warn('WebSocket connection closed. Attempting reconnect in 5s...');
+        reconnectTimeout = setTimeout(connectWebSocket, 5000);
+      };
+
+      socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (socket) socket.close();
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+    };
+  }, [user]);
+
   // ── Assignment actions ──────────────────────────────────────────────────────
   const submitAssignment = async (assignmentId, submissionUrl) => {
     await api.post(`/assignments/${assignmentId}/submit`, { submissionUrl });

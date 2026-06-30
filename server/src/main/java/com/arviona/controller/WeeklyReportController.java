@@ -22,6 +22,8 @@ public class WeeklyReportController {
     @Autowired private StudentKnowledgeMapRepository knowledgeMapRepository;
     @Autowired private StudentGamificationRepository gamificationRepository;
     @Autowired private NotificationRepository notificationRepository;
+    @Autowired private com.arviona.service.NotificationService notificationService;
+
 
     // ── Teacher: generate report ────────────────────────────────────────────
     @PostMapping
@@ -101,7 +103,7 @@ public class WeeklyReportController {
                         .readStatus(false)
                         .createdBy(userDetails.getName())
                         .build();
-                notificationRepository.save(notif);
+                notificationService.saveAndSend(notif);
             }
         });
 
