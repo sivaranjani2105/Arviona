@@ -407,7 +407,16 @@ export const DataProvider = ({ children }) => {
   };
 
   // ── Misc ────────────────────────────────────────────────────────────────────
-  const addParentFeedback   = (fb) => setParentFeedbacks(prev => [...prev, fb]);
+  const addParentFeedback = (studentId, parentName, message) => {
+    const feedbackObj = {
+      id: Date.now().toString(),
+      studentId,
+      parentName,
+      message,
+      createdAt: new Date().toISOString()
+    };
+    setParentFeedbacks(prev => [feedbackObj, ...prev]);
+  };
   const fetchPrincipalTelemetry = async () => {
     const t = await api.get('/principal/telemetry');
     setPrincipalTelemetry(t);
