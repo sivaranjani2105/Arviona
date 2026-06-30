@@ -38,6 +38,9 @@ public class QuestController {
     @Autowired
     private ClassRepository classRepository;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @GetMapping("/active")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> getActiveQuests(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -227,47 +230,42 @@ public class QuestController {
      */
     @GetMapping("/pool")
     public ResponseEntity<?> getQuestionPool() {
-        Map<String, Object> pool = new java.util.LinkedHashMap<>();
-
-        // Mathematics
-        pool.put("Mathematics", Map.of(
-            "EASY", java.util.List.of(
-                Map.of("id","m1","text","What is 12 × 8?","options",java.util.List.of("96","94","98","88"),"answer","96"),
-                Map.of("id","m2","text","Solve: x + 7 = 15","options",java.util.List.of("7","8","6","9"),"answer","8")
-            ),
-            "MEDIUM", java.util.List.of(
-                Map.of("id","m3","text","Find the derivative of x³","options",java.util.List.of("3x²","x²","3x","2x³"),"answer","3x²"),
-                Map.of("id","m4","text","Integrate 2x dx","options",java.util.List.of("x²+C","2x²+C","x+C","2+C"),"answer","x²+C")
-            ),
-            "HARD", java.util.List.of(
-                Map.of("id","m5","text","Solve: d/dx[sin(x²)]","options",java.util.List.of("2x·cos(x²)","cos(x²)","2sin(x)","cos(2x)"),"answer","2x·cos(x²)")
-            )
-        ));
-
-        // Physics
-        pool.put("Physics", Map.of(
-            "EASY", java.util.List.of(
-                Map.of("id","p1","text","What is the unit of Force?","options",java.util.List.of("Newton","Joule","Watt","Pascal"),"answer","Newton"),
-                Map.of("id","p2","text","Speed of light ≈ ?","options",java.util.List.of("3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁴ m/s"),"answer","3×10⁸ m/s")
-            ),
-            "MEDIUM", java.util.List.of(
-                Map.of("id","p3","text","State Newton's 2nd Law","options",java.util.List.of("F=ma","F=mv","E=mc²","P=mv"),"answer","F=ma")
-            ),
-            "HARD", java.util.List.of(
-                Map.of("id","p4","text","What is the Heisenberg Uncertainty Principle?","options",java.util.List.of("Δx·Δp ≥ ℏ/2","E=hf","F=ma","PV=nRT"),"answer","Δx·Δp ≥ ℏ/2")
-            )
-        ));
-
-        // Chemistry
-        pool.put("Chemistry", Map.of(
-            "EASY", java.util.List.of(
-                Map.of("id","c1","text","Chemical symbol for Gold?","options",java.util.List.of("Au","Ag","Fe","Gd"),"answer","Au"),
-                Map.of("id","c2","text","pH of pure water?","options",java.util.List.of("7","5","8","6"),"answer","7")
-            ),
-            "MEDIUM", java.util.List.of(
-                Map.of("id","c3","text","Avogadro's number is approximately?","options",java.util.List.of("6.022×10²³","6.022×10²⁰","6.022×10²⁶","3.14×10²³"),"answer","6.022×10²³")
-            )
-        ));
+        List<Question> questions = questionRepository.findAllByDeletedFalse();
+        
+        Map<String, Map<String, List<Map<String, Object>>>> pool = new LinkedHashMap<>();
+        
+        for (Question q : questions) {
+            String subject = q.getSubject();
+            String difficulty = q.getDifficulty().toUpperCase(); // Ensure uppercase matching client (EASY, MEDIUM, HARD)
+            
+            pool.putIfAbsent(subject, new LinkedHashMap<>());
+            pool.get(subject).putIfAbsent(difficulty, new ArrayList<>());
+            
+            Map<String, Object> qMap = new HashMap<>();
+            qMap.put("id", q.getId());
+            qMap.put("text", q.getText());
+            qMap.put("options", Arrays.asList(q.getOptions().split(";")));
+            qMap.put("answer", q.getCorrectAnswer());
+            qMap.put("difficulty", q.getDifficulty());
+            
+            pool.get(subject).get(difficulty).add(qMap);
+        }
+        
+        // Fallback seed if database is empty for robustness
+        if (pool.isEmpty()) {
+            pool.put("Mathematics", Map.of(
+                "EASY", List.of(
+                    Map.of("id","m1","text","What is 12 × 8?","options",List.of("96","94","98","88"),"answer","96"),
+                    Map.of("id","m2","text","Solve: x + 7 = 15","options",List.of("7","8","6","9"),"answer","8")
+                ),
+                "MEDIUM", List.of(
+                    Map.of("id","m3","text","Find the derivative of x³","options",List.of("3x²","x²","3x","2x³"),"answer","3x²")
+                ),
+                "HARD", List.of(
+                    Map.of("id","m5","text","Solve: d/dx[sin(x²)]","options",List.of("2x·cos(x²)","cos(x²)","2sin(x)","cos(2x)"),"answer","2x·cos(x²)")
+                )
+            ));
+        }
 
         return ResponseEntity.ok(pool);
     }
